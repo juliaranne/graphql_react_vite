@@ -42,7 +42,7 @@ const DisplayLocations = () => {
   return alphaCountries ? Object.keys(alphaCountries).sort().map((key, index) => (
     <div key={index}>
       {key}
-      <CountryList countries={alphaCountries[key]}>hello</CountryList>
+      <CountryList countries={alphaCountries[key]} />
     </div>
   )) : null
 }

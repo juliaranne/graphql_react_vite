@@ -1,13 +1,13 @@
-import { PropsWithChildren, useState } from 'react'
+import Country from './Country';
 
 interface CountryListProps {
     countries: string[]
 }
 
-const CountryList = ({countries, children}: PropsWithChildren<CountryListProps>) => {
-    const [showQuiz, setShowQuiz] = useState<boolean>(false);
+const CountryList = ({countries}: CountryListProps) => {
+    console.log('hello')
     return (
-        countries.sort().map(country => <li key={country}><button onClick={() => setShowQuiz(!showQuiz)} type="button">{country}</button>{children}</li>)
+        countries.sort().map(country => <Country country={country}>hello</Country>)
     )
 }
 
