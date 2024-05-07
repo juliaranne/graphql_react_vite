@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { useQuery, gql, useLazyQuery } from '@apollo/client';
 import CountryList from './components/CountryList';
+import Inputs from './components/Inputs';
 import './App.css';
 
 interface Country {
@@ -38,7 +39,8 @@ const GET_CAPITAL = gql`query GetCountry($code: ID!) {
 const DisplayLocations = () => {
   const { loading, error, data } = useQuery(GET_COUNTRIES);
   const [getAnswer, { loading: load, data: response }] = useLazyQuery(GET_CAPITAL);
-  const [alphaCountries, setAlphaCountries] = useState<SortedData | null>(null)
+  const [alphaCountries, setAlphaCountries] = useState<SortedData | null>(null);
+  const [activeCountry, setActiveCountry] = useState<string>('');
 
   useMemo(() => {
     if (data) {
@@ -46,22 +48,31 @@ const DisplayLocations = () => {
     }
   }, [data])
 
-  const handleGuess = (country: string) => {
-    const activeCountry: Country | undefined = Object.values<Country>(data.countries).find((item: Country) => item.name === country);
-    if (activeCountry) {
-      const answer = getAnswer({ variables: { code: activeCountry.code } });
+  const handleGuess = () => {
+    const country: Country | undefined = Object.values<Country>(data.countries).find((item: Country) => item.name === activeCountry);
+    if (country) {
+      const answer = getAnswer({ variables: { code: country.code } });
     }
+  }
+
+  const selectCountry = (country: string) => {
+    setActiveCountry(country);
   }
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
-  return alphaCountries ? Object.keys(alphaCountries).sort().map((key, index) => (
-    <div key={index}>
-      {key}
-      <CountryList handleGuess={handleGuess} countries={alphaCountries[key]} />
-    </div>
-  )) : null
+  return (
+    <> 
+      {alphaCountries ? Object.keys(alphaCountries).sort().map((key, index) => (
+        <div key={index}>
+          {key}
+          <CountryList selectCountry={selectCountry} countries={alphaCountries[key]} activeCountry={activeCountry} />
+        </div>
+      )) : null}
+      <Inputs handleGuess={handleGuess} />
+    </>
+  )
 }
 
 export default DisplayLocations

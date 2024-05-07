@@ -2,13 +2,13 @@ import { useState, PropsWithChildren } from 'react'
 
 interface CountryProps {
     country: string
+    selectCountry: (country: string) => void;
+    activeCountry: string;
 }
 
-const Country = ({country, children}: PropsWithChildren<CountryProps>) => {
-    const [showQuiz, setShowQuiz] = useState<boolean>(false);
-
+const Country = ({country, selectCountry, activeCountry}: PropsWithChildren<CountryProps>) => {
     return (
-        <li key={country}><button onClick={() => setShowQuiz(!showQuiz)} type="button">{country}</button>{showQuiz ? children : null}</li>
+        <li key={country}><button onClick={() => selectCountry(country)} type="button">{country}</button></li>
     )
 }
 

@@ -1,14 +1,14 @@
 import Country from './Country';
-import Inputs from './Inputs';
 
 interface CountryListProps {
     countries: string[];
-    handleGuess: (country: string) => void;
+    selectCountry: (country: string) => void;
+    activeCountry: string;
 }
 
-const CountryList = ({countries, handleGuess}: CountryListProps) => {
+const CountryList = ({countries, selectCountry, activeCountry}: CountryListProps) => {
     return (
-        countries.sort().map((country, index) => <Country key={index} country={country}><Inputs handleGuess={() => handleGuess(country)} /></Country>)
+        countries.sort().map((country, index) => <Country activeCountry={activeCountry} selectCountry={selectCountry} key={index} country={country} />)
     )
 }
 
