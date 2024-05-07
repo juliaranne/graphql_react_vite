@@ -2,13 +2,13 @@ import Country from './Country';
 import Inputs from './Inputs';
 
 interface CountryListProps {
-    countries: string[]
+    countries: string[];
+    handleGuess: (country: string) => void;
 }
 
-const CountryList = ({countries}: CountryListProps) => {
-    console.log('hello')
+const CountryList = ({countries, handleGuess}: CountryListProps) => {
     return (
-        countries.sort().map(country => <Country country={country}><Inputs /></Country>)
+        countries.sort().map((country, index) => <Country key={index} country={country}><Inputs handleGuess={() => handleGuess(country)} /></Country>)
     )
 }
 

@@ -1,10 +1,14 @@
 // import { useState } from 'react'
 
-const Inputs = () => {
+interface InputProps {
+    handleGuess: () => void
+}
+
+const Inputs = ({handleGuess}: InputProps) => {
     return (
        <form>
             <label>Capital
-                <input type="text" ></input>
+                <input type="text" onChange={handleGuess} ></input>
             </label>
        </form>
     )

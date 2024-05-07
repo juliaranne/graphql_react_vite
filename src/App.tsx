@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react'
-import { useQuery, gql } from '@apollo/client';
+import { useQuery, gql, useLazyQuery } from '@apollo/client';
 import CountryList from './components/CountryList';
 import './App.css';
 
 interface Country {
   name: string;
-  __typename: "Country"
+  code: string;
+  __typename: "Country";
 }
 
 interface SortedData {
@@ -20,14 +21,23 @@ const sortData = (data: Country[]) => {
   }, {} as SortedData)
 }
 
-const GET_COUNTRIES = gql`query GetCountry {
+const GET_COUNTRIES = gql`query GetCountries {
   countries {
     name
+    code
+  }
+}`
+
+const GET_CAPITAL = gql`query GetCountry($code: ID!) {
+  country(code: $code) {
+    name
+    capital
   }
 }`
 
 const DisplayLocations = () => {
   const { loading, error, data } = useQuery(GET_COUNTRIES);
+  const [getAnswer, { loading: load, data: response }] = useLazyQuery(GET_CAPITAL);
   const [alphaCountries, setAlphaCountries] = useState<SortedData | null>(null)
 
   useMemo(() => {
@@ -36,13 +46,20 @@ const DisplayLocations = () => {
     }
   }, [data])
 
+  const handleGuess = (country: string) => {
+    const activeCountry: Country | undefined = Object.values<Country>(data.countries).find((item: Country) => item.name === country);
+    if (activeCountry) {
+      const answer = getAnswer({ variables: { code: activeCountry.code } });
+    }
+  }
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
   return alphaCountries ? Object.keys(alphaCountries).sort().map((key, index) => (
     <div key={index}>
       {key}
-      <CountryList countries={alphaCountries[key]} />
+      <CountryList handleGuess={handleGuess} countries={alphaCountries[key]} />
     </div>
   )) : null
 }
