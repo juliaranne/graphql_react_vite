@@ -55,7 +55,6 @@ const DisplayLocations = () => {
     if (country) {
       getAnswer({ variables: { code: country.code } });
       if (response?.country) {
-        console.log(response.country.capital, userGuess.trim())
         setCorrect(response.country.capital === userGuess.trim());
       }
     }

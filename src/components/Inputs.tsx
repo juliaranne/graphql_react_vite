@@ -1,5 +1,3 @@
-// import { useState } from 'react'
-
 interface InputProps {
     handleGuess: (event: React.ChangeEvent<HTMLInputElement>) => void;
     correct: boolean;
