@@ -41,6 +41,7 @@ const DisplayLocations = () => {
   const [getAnswer, { loading: load, data: response }] = useLazyQuery(GET_CAPITAL);
   const [alphaCountries, setAlphaCountries] = useState<SortedData | null>(null);
   const [activeCountry, setActiveCountry] = useState<string>('');
+  const [correct, setCorrect] = useState<boolean>(false);
 
   useMemo(() => {
     if (data) {
@@ -48,10 +49,15 @@ const DisplayLocations = () => {
     }
   }, [data])
 
-  const handleGuess = () => {
+  const handleGuess = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const userGuess = event.currentTarget.value;
     const country: Country | undefined = Object.values<Country>(data.countries).find((item: Country) => item.name === activeCountry);
     if (country) {
-      const answer = getAnswer({ variables: { code: country.code } });
+      getAnswer({ variables: { code: country.code } });
+      if (response?.country) {
+        console.log(response.country.capital, userGuess.trim())
+        setCorrect(response.country.capital === userGuess.trim());
+      }
     }
   }
 
@@ -65,12 +71,12 @@ const DisplayLocations = () => {
   return (
     <> 
       {alphaCountries ? Object.keys(alphaCountries).sort().map((key, index) => (
-        <div key={index}>
+        <ul key={index}>
           {key}
           <CountryList selectCountry={selectCountry} countries={alphaCountries[key]} activeCountry={activeCountry} />
-        </div>
+        </ul>
       )) : null}
-      <Inputs handleGuess={handleGuess} />
+      <Inputs handleGuess={handleGuess} correct={correct} />
     </>
   )
 }
